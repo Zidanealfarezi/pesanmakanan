@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus, Trash2, Image as ImageIcon, XCircle } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Plus, Trash2, Image as ImageIcon, XCircle, Upload, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 type Menu = {
@@ -18,6 +18,9 @@ export default function AdminMenuPage() {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -66,8 +69,39 @@ export default function AdminMenuPage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Show local preview immediately
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+
+    // Upload to server
+    setUploading(true);
+    try {
+      const uploadData = new FormData();
+      uploadData.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: uploadData });
+      const result = await res.json();
+      if (result.url) {
+        setFormData(prev => ({ ...prev, image: result.url }));
+      } else {
+        alert('Gagal upload foto. Coba lagi.');
+        setImagePreview(null);
+      }
+    } catch (error) {
+      alert('Gagal upload foto.');
+      setImagePreview(null);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleAddMenu = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading) return; // Prevent submit while uploading
     try {
       await fetch("/api/menus", {
         method: "POST",
@@ -76,6 +110,7 @@ export default function AdminMenuPage() {
       });
       setIsAdding(false);
       setFormData({ name: "", description: "", price: "", category: "Makanan Utama", image: "" });
+      setImagePreview(null);
       fetchMenus();
     } catch (error) {
       alert("Gagal menambahkan menu");
@@ -130,8 +165,40 @@ export default function AdminMenuPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">URL Gambar (Opsional)</label>
-              <input type="text" value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-500" placeholder="/images/nama_file.png" />
+              <label className="block text-sm font-medium text-slate-700 mb-1">Foto Makanan (Opsional)</label>
+              <input 
+                ref={fileInputRef}
+                type="file" 
+                accept="image/*" 
+                onChange={handleImageUpload} 
+                className="hidden" 
+              />
+              {imagePreview || formData.image ? (
+                <div className="relative w-full h-32 sm:h-40 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
+                  <img src={imagePreview || formData.image} alt="Preview" className="w-full h-full object-cover" />
+                  <button 
+                    type="button"
+                    onClick={() => { setImagePreview(null); setFormData(prev => ({...prev, image: ''})); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                    className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full cursor-pointer hover:bg-red-600"
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </button>
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <Loader2 className="w-6 h-6 text-white animate-spin" />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button 
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-32 sm:h-40 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center gap-2 text-slate-400 hover:border-orange-400 hover:text-orange-500 transition cursor-pointer"
+                >
+                  <Upload className="w-6 h-6" />
+                  <span className="text-xs sm:text-sm font-medium">Pilih Foto dari Galeri</span>
+                </button>
+              )}
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-slate-700 mb-1">Deskripsi Singkat</label>
