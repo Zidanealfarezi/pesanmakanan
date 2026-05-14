@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, LayoutList, Menu, X, QrCode, BarChart } from "lucide-react";
+import { ClipboardList, LayoutList, Menu, X, QrCode, BarChart, Store } from "lucide-react";
 import { useState } from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -41,6 +41,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               }`}
             >
               <ClipboardList className="w-5 h-5" /> Pesanan Aktif
+            </Link>
+            <Link 
+              href="/admin/kasir" 
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition ${
+                pathname === '/admin/kasir' ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <Store className="w-5 h-5" /> Mesin Kasir
             </Link>
             <Link 
               href="/admin/menu" 
