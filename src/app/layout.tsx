@@ -19,10 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${inter.variable} antialiased h-full`}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+      </head>
       <body className="min-h-full flex flex-col font-sans bg-slate-50 text-slate-900">
-        <main className="flex-1 max-w-md mx-auto w-full bg-white shadow-xl min-h-screen relative">
-          {children}
-        </main>
+        {children}
       </body>
     </html>
   );
