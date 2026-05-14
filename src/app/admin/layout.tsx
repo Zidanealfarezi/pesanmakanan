@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, LayoutList, Menu, X, QrCode } from "lucide-react";
+import { ClipboardList, LayoutList, Menu, X, QrCode, BarChart } from "lucide-react";
 import { useState } from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -59,6 +59,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               }`}
             >
               <QrCode className="w-5 h-5" /> QR Code Meja
+            </Link>
+            <Link 
+              href="/admin/laporan" 
+              onClick={() => setSidebarOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition ${
+                pathname === '/admin/laporan' ? 'bg-orange-50 text-orange-600' : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <BarChart className="w-5 h-5" /> Laporan Omset
             </Link>
           </nav>
         </aside>
