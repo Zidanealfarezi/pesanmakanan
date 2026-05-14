@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "Ayam Penyet Original",
+    "description": "Ayam goreng rempah yang dipenyet dengan sambal bawang super pedas.",
+    "price": 18000,
+    "image": "/images/ayam_penyet.png",
+    "category": "Makanan Utama",
+    "available": true
+  },
+  {
+    "id": "2",
+    "name": "Es Teh Manis",
+    "description": "Teh melati manis dingin yang menyegarkan dahaga.",
+    "price": 6000,
+    "image": "/images/es_teh.png",
+    "category": "Minuman",
+    "available": true
+  },
+  {
+    "id": "3",
+    "name": "Nasi Putih",
+    "description": "Nasi putih hangat porsi pas.",
+    "price": 5000,
+    "image": "",
+    "category": "Tambahan",
+    "available": true
+  },
+  {
+    "id": "1778734108831",
+    "name": "Lele Goreng Crispy",
+    "description": "Lele goreng garing banget",
+    "price": 16000,
+    "image": "",
+    "category": "Makanan Utama",
+    "available": true
+  }
+]
