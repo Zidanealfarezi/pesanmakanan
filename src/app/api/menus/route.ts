@@ -8,11 +8,14 @@ export async function GET() {
       .select('*')
       .order('id', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase menus error:", error);
+      return NextResponse.json([]);
+    }
     return NextResponse.json(data || []);
   } catch (error) {
     console.error("Error fetching menus:", error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch menus' }, { status: 500 });
+    return NextResponse.json([]);
   }
 }
 

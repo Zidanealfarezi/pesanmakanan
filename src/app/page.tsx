@@ -33,11 +33,13 @@ function MenuContent() {
     fetch("/api/menus")
       .then(res => res.json())
       .then(data => {
-        setMenus(data);
+        // Ensure data is an array (API might return error object)
+        setMenus(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
+        setMenus([]);
         setLoading(false);
       });
   }, []);
